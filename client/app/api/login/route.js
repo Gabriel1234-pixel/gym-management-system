@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import db from "../../../lib/db";
 
 export async function POST(request) {
   try {
@@ -7,27 +8,50 @@ export async function POST(request) {
     const normalizedUsername = String(username || "").trim().toLowerCase();
     const normalizedPassword = String(password || "").trim();
 
-    const validCredentials = [
-      { username: "admin", password: "admin123" },
-      { username: "manager", password: "manager123" },
-      { username: "staff", password: "staff123" },
-      { username: "member", password: "member123" },
-    ];
-
-    const match = validCredentials.find(
-      (credential) =>
-        normalizedUsername === credential.username &&
-        normalizedPassword === credential.password
-    );
-
-    if (!match) {
+    if (!normalizedUsername || !normalizedPassword) {
       return NextResponse.json(
         { success: false, error: "Invalid username or password" },
         { status: 401 }
       );
     }
 
-    return NextResponse.json({ success: true, user: { username: match.username } });
+    const demoCredentials = [
+      { username: "admin", password: "admin123" },
+      { username: "manager", password: "manager123" },
+      { username: "staff", password: "staff123" },
+      { username: "member", password: "member123" },
+    ];
+
+    const demoMatch = demoCredentials.find(
+      (credential) =>
+        normalizedUsername === credential.username &&
+        normalizedPassword === credential.password
+    );
+
+    if (demoMatch) {
+      return NextResponse.json({ success: true, user: { username: demoMatch.username } });
+    }
+
+    const [rows] = await db.query(
+      "SELECT full_name, email, phone FROM members WHERE LOWER(email) = ? AND phone = ?",
+      [normalizedUsername, normalizedPassword]
+    );
+
+    const member = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
+
+    if (member) {
+      return NextResponse.json({
+        success: true,
+        user: {
+          username: member.full_name || member.email,
+        },
+      });
+    }
+
+    return NextResponse.json(
+      { success: false, error: "Invalid username or password" },
+      { status: 401 }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(

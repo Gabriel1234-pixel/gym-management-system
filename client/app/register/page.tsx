@@ -48,13 +48,13 @@ export default function RegisterPage({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fullName,
-          email,
-          phone: phoneNumber,
-          password,
-          plan: planLabel,
-          className: selectedClass || "General",
-        }),
+  full_name: fullName,
+  gender: "Male",
+  email,
+  phone: phoneNumber,
+  address: "Nakuru",
+  date_of_birth: "2000-01-01",
+}),
       });
 
       const data = await response.json();
@@ -102,7 +102,8 @@ export default function RegisterPage({
           />
 
           <input
-            type="email"
+            type="text"
+            inputMode="email"
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

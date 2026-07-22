@@ -16,7 +16,7 @@ export default function Hero() {
         </p>
 
         <Link
-          href="/register"
+          href="/members/add"
           className="mt-8 inline-flex items-center rounded-lg bg-yellow-400 px-6 py-3 font-bold text-black transition hover:bg-yellow-300"
         >
           Join Now

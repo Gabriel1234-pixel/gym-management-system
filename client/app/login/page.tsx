@@ -45,12 +45,14 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="block mb-2">Username</label>
+            <label className="block mb-2">Email</label>
             <input
               type="text"
+              inputMode="email"
               className="w-full border p-3 rounded"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -62,6 +64,7 @@ export default function LoginPage() {
               className="w-full border p-3 rounded"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password or phone number"
               required
             />
           </div>
@@ -76,6 +79,9 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center mt-4 text-sm text-gray-600">
+          Members: use your registered email and phone number.
+        </p>
+        <p className="text-center mt-2 text-sm text-gray-600">
           Demo Login: admin / admin123
         </p>
       </div>
