@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function RegisterPage({
@@ -8,6 +9,7 @@ export default function RegisterPage({
 }: {
   searchParams?: Promise<{ plan?: string | string[] | undefined; class?: string | string[] | undefined }>;
 }) {
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -60,12 +62,8 @@ export default function RegisterPage({
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setStatusMessage(data.message || "Member registered successfully!");
-        setFullName("");
-        setEmail("");
-        setPhoneNumber("");
-        setPassword("");
-        setConfirmPassword("");
+        const redirectName = fullName.trim() || "Member";
+        router.push(`/member-dashboard?name=${encodeURIComponent(redirectName)}`);
       } else {
         setStatusMessage(data.error || "Registration failed.");
       }

@@ -16,10 +16,10 @@ export async function POST(request) {
     }
 
     const demoCredentials = [
-      { username: "admin", password: "admin123" },
-      { username: "manager", password: "manager123" },
-      { username: "staff", password: "staff123" },
-      { username: "member", password: "member123" },
+      { username: "admin", password: "admin123", role: "admin" },
+      { username: "manager", password: "manager123", role: "admin" },
+      { username: "staff", password: "staff123", role: "admin" },
+      { username: "member", password: "member123", role: "member" },
     ];
 
     const demoMatch = demoCredentials.find(
@@ -29,7 +29,14 @@ export async function POST(request) {
     );
 
     if (demoMatch) {
-      return NextResponse.json({ success: true, user: { username: demoMatch.username } });
+      return NextResponse.json({
+        success: true,
+        user: {
+          username: demoMatch.username,
+          full_name: demoMatch.username,
+          role: demoMatch.role,
+        },
+      });
     }
 
     const [rows] = await db.query(
@@ -44,6 +51,8 @@ export async function POST(request) {
         success: true,
         user: {
           username: member.full_name || member.email,
+          full_name: member.full_name || member.email,
+          role: "member",
         },
       });
     }

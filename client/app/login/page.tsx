@@ -24,6 +24,14 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        const role = data.user?.role || "admin";
+        const name = data.user?.full_name || data.user?.username || "Member";
+
+        if (role === "member") {
+          router.push(`/member-dashboard?name=${encodeURIComponent(name)}`);
+          return;
+        }
+
         router.push("/dashboard");
       } else {
         alert(data.error || "Invalid username or password");
