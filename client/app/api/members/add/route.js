@@ -27,7 +27,8 @@ export async function POST(request) {
       phone,
       address,
       date_of_birth,
-    } = body;
+      status,
+    } = body || {};
 
     if (!full_name || !phone) {
       return NextResponse.json(
@@ -36,8 +37,11 @@ export async function POST(request) {
       );
     }
 
+    const normalizedStatus = status === "Inactive" ? "Inactive" : "Active";
+    const today = new Date().toISOString().slice(0, 10);
+
     const [result] = await db.query(
-      "INSERT INTO members (full_name, gender, email, phone, address, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO members (full_name, gender, email, phone, address, date_of_birth, join_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
         full_name,
         gender || "Male",
@@ -45,6 +49,8 @@ export async function POST(request) {
         phone,
         address || null,
         date_of_birth || null,
+        today,
+        normalizedStatus,
       ]
     );
 
